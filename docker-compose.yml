@@ -1,4 +1,50 @@
-version: '3.9'
+version: "3.9"
+
 services:
+
   postgres:
-    image: postgres:16
+    image: postgres:16-alpine
+    container_name: mcp-postgres
+    environment:
+      POSTGRES_DB: mcp
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    container_name: mcp-redis
+    ports:
+      - "6379:6379"
+
+  api:
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres
+      - redis
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+  mcp-registry:
+    build:
+      context: ./python-services/mcp-registry
+    ports:
+      - "8000:8000"
+
+  ai-orchestrator:
+    build:
+      context: ./python-services/ai-orchestrator
+    ports:
+      - "8010:8010"
