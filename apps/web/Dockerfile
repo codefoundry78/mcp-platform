@@ -1,5 +1,5 @@
 # -------------------------
-# 1. Base image
+# Base
 # -------------------------
 FROM node:22-alpine AS base
 
@@ -7,26 +7,29 @@ RUN corepack enable
 WORKDIR /app
 
 # -------------------------
-# 2. Install dependencies
+# Dependencies
 # -------------------------
 FROM base AS deps
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
-COPY apps/web/package.json apps/web/
+COPY apps/web/package.json apps/web/package.json
+COPY packages/shared-types/package.json packages/shared-types/package.json
 
 RUN pnpm install --frozen-lockfile
 
 # -------------------------
-# 3. Build stage
+# Build
 # -------------------------
 FROM deps AS builder
 
-COPY . .
+COPY packages/shared-types packages/shared-types
+COPY apps/web apps/web
 
-RUN pnpm --filter web build
+RUN pnpm --filter @mcp-platform/shared-types build
+RUN pnpm --filter @mcp-platform/web build
 
 # -------------------------
-# 4. Production runtime
+# Runtime
 # -------------------------
 FROM node:22-alpine AS runner
 
@@ -35,12 +38,11 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Copy only built output
-COPY --from=builder /app/apps/web/.next /app/apps/web/.next
-COPY --from=builder /app/apps/web/public /app/apps/web/public
-COPY --from=builder /app/apps/web/package.json /app/apps/web/package.json
-COPY --from=builder /app/node_modules /app/node_modules
+COPY --from=builder /app/apps/web/dist ./dist
+COPY --from=builder /app/apps/web/package.json ./package.json
+
+RUN npm install -g serve
 
 EXPOSE 3000
 
-CMD ["pnpm", "--filter", "web", "start"]
+CMD ["serve", "-s", "dist", "-l", "3000"]

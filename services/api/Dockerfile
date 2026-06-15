@@ -7,43 +7,39 @@ RUN corepack enable
 WORKDIR /app
 
 # -------------------------
-# Dependencies (cached layer)
+# Dependencies
 # -------------------------
 FROM base AS deps
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 COPY services/api/package.json services/api/package.json
+COPY packages/shared-types/package.json packages/shared-types/package.json
 
 RUN pnpm install --frozen-lockfile
 
 # -------------------------
-# Build stage
+# Build
 # -------------------------
 FROM deps AS builder
 
-COPY . .
+COPY packages/shared-types packages/shared-types
+COPY services/api services/api
 
-RUN pnpm --filter api build
+RUN pnpm --filter @mcp-platform/shared-types build
+RUN pnpm --filter @mcp-platform/api build
 
 # -------------------------
-# Runtime (clean NestJS production image)
+# Runtime
 # -------------------------
 FROM node:22-alpine AS runner
 
-RUN corepack enable
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Only compiled output
 COPY --from=builder /app/services/api/dist ./dist
 COPY --from=builder /app/services/api/package.json ./package.json
-
-# Install ONLY production dependencies
-COPY --from=builder /app/pnpm-lock.yaml ./
-COPY --from=builder /app/pnpm-workspace.yaml ./
-
-RUN pnpm install --prod --frozen-lockfile
+COPY --from=builder /app/node_modules ./node_modules
 
 EXPOSE 3001
 

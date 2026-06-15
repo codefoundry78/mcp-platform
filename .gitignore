@@ -1,1 +1,12 @@
 .env
+dev_plan.md
+node_modules
+dist
+__pycache__
+*.py[cod]
+.pytest_cache
+.mypy_cache
+.ruff_cache
+*.egg-info
+.venv
+workspace
