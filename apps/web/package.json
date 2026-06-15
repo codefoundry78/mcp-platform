@@ -1,1 +1,25 @@
-{ "name":"web","scripts":{"dev":"vite"}}
+{
+  "name": "@mcp-platform/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 3000 --host",
+    "start": "vite preview --port 3000 --host",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mcp-platform/shared-types": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0"
+  }
+}

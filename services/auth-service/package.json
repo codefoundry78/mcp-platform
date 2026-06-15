@@ -1,0 +1,9 @@
+{
+  "name": "@mcp-platform/auth-service",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "node -e \"console.log('auth-service scaffold')\"",
+    "typecheck": "node -e \"console.log('auth-service scaffold')\""
+  }
+}

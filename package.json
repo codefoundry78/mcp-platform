@@ -1,1 +1,22 @@
-{ "name":"mcp-platform","private":true }
+{
+    "name": "mcp-platform",
+    "private": true,
+    "packageManager": "pnpm@9.15.0",
+    "workspaces": [
+        "apps/*",
+        "services/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "dev": "turbo dev",
+        "build": "turbo build",
+        "start": "turbo start",
+        "test": "turbo test",
+        "lint": "turbo lint",
+        "typecheck": "turbo typecheck"
+    },
+    "devDependencies": {
+        "turbo": "^2.3.0",
+        "typescript": "^5.7.0"
+    }
+}

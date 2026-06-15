@@ -1,1 +1,9 @@
-{ "name":"admin"}
+{
+  "name": "@mcp-platform/admin",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "node -e \"console.log('admin scaffold')\"",
+    "typecheck": "node -e \"console.log('admin scaffold')\""
+  }
+}

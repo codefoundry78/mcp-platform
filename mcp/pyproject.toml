@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcp-platform-sdk"
+version = "0.1.0"
+description = "MCP SDK and reference servers for mcp-platform"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.11.0",
+    "structlog>=25.4.0",
+    "httpx>=0.28.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
+    "httpx>=0.28.0",
+    "respx>=0.22.0",
+]
+github = [
+    "httpx>=0.28.0",
+]
+
+[project.scripts]
+mcp-filesystem-server = "servers.filesystem_server.server:main"
+mcp-github-server = "servers.github_server.server:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["core*", "servers*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
